@@ -10,6 +10,7 @@ import {
   IconFileText,
 } from '@tabler/icons-react';
 import type { ReviewResult } from '../../data/types';
+import { PostToGitHubButton } from './post-to-github-button';
 import {
   generateMarkdownReport,
   downloadFile,
@@ -124,6 +125,12 @@ export function ScoreBreakdownSidebar({
       <div className={style.card}>
         <div className={style.cardHeader}>Export & Share</div>
         <div className={classnames(style.cardBody, style.actions)}>
+          <PostToGitHubButton
+            prUrl={result.prData.url}
+            reviewResult={result}
+            inlineComments={result.inlineComments || []}
+          />
+          <div className={style.actionDivider} />
           <button onClick={handleCopy} className={classnames(style.actionBtn, { [style.copySuccess]: copied })}>
             {copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
             {copied ? 'Copied!' : 'Copy Markdown'}
