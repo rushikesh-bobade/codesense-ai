@@ -1,0 +1,31 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1a1f35"/>
+      <stop offset="100%" stop-color="#0b0d10"/>
+    </linearGradient>
+    <linearGradient id="bracketGrad" x1="8" y1="16" x2="56" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6b85ff"/>
+      <stop offset="100%" stop-color="#4f6cf5"/>
+    </linearGradient>
+    <linearGradient id="lensGrad" x1="28" y1="20" x2="52" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#6b85ff"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded background -->
+  <rect width="64" height="64" rx="14" fill="url(#bgGrad)"/>
+  <rect width="64" height="64" rx="14" stroke="#1f262e" stroke-width="1"/>
+  <!-- Left angle bracket < -->
+  <path d="M10 32L22 20L26 24L18 32L26 40L22 44L10 32Z" fill="url(#bracketGrad)"/>
+  <!-- Right angle bracket > (faded) -->
+  <path d="M54 32L42 44L38 40L46 32L38 24L42 20L54 32Z" fill="url(#bracketGrad)" opacity="0.5"/>
+  <!-- Magnifying glass circle (the "Sense" part) -->
+  <circle cx="37" cy="30" r="9" stroke="url(#lensGrad)" stroke-width="2.5" fill="none"/>
+  <!-- Magnifying glass handle -->
+  <line x1="43.5" y1="36.5" x2="50" y2="43" stroke="url(#lensGrad)" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Code lines inside lens -->
+  <line x1="32" y1="28" x2="36" y2="28" stroke="#6b85ff" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="34" y1="31" x2="40" y2="31" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  <line x1="33" y1="34" x2="37" y2="34" stroke="#6b85ff" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+</svg>

@@ -1,0 +1,71 @@
+.errorBoundary {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--color-bg-primary);
+}
+
+.errorContainer {
+  text-align: center;
+  max-width: 640px;
+  width: 100%;
+  padding: var(--space-2xl);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+}
+
+.errorTitle {
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+  font-size: var(--text-4xl);
+  color: var(--color-text-primary);
+  letter-spacing: -0.03em;
+}
+
+.errorDetails {
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-lg);
+  font-size: var(--text-md);
+}
+
+.errorStackWrapper {
+  position: relative;
+  margin-top: var(--space-lg);
+}
+
+.copyButton {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  padding: 6px 12px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: background 0.15s, color 0.15s;
+}
+
+.copyButton:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.errorStack {
+  margin-top: var(--space-sm);
+  text-align: start;
+  overflow: auto;
+  font-size: 12px;
+  padding: var(--space-md);
+  background: var(--color-bg-input);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  max-height: 20rem;
+  color: var(--color-text-secondary);
+  font-family: var(--family-mono);
+}

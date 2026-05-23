@@ -1,0 +1,111 @@
+.root {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.header {
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.files {
+  display: flex;
+  flex-direction: column;
+}
+
+.file {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.file:last-child {
+  border-bottom: none;
+}
+
+.fileHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--color-bg-hover);
+  cursor: pointer;
+  user-select: none;
+}
+
+.fileName {
+  font-family: var(--family-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  flex: 1;
+}
+
+.fileChanges {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.add { color: var(--color-info); font-size: var(--text-xs); font-weight: 600; font-family: var(--family-mono); }
+.del { color: var(--color-critical); font-size: var(--text-xs); font-weight: 600; font-family: var(--family-mono); }
+
+.chevron {
+  color: var(--color-text-muted);
+  transition: transform 0.2s;
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+.diffBody {
+  overflow-x: auto;
+}
+
+.diffTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--family-mono);
+  font-size: 12px;
+}
+
+.lineNum {
+  padding: 2px 12px;
+  color: var(--color-text-muted);
+  text-align: right;
+  user-select: none;
+  border-right: 1px solid var(--color-border);
+  min-width: 48px;
+}
+
+.lineType {
+  padding: 2px 8px;
+  min-width: 20px;
+  text-align: center;
+  user-select: none;
+}
+
+.lineCode {
+  padding: 2px 12px;
+  white-space: pre;
+  color: var(--color-text-secondary);
+  width: 100%;
+}
+
+.lineAdd { background: rgba(52, 211, 153, 0.08); }
+.lineDel { background: rgba(248, 113, 113, 0.08); }
+
+.lineTypeAdd { color: var(--color-info); }
+.lineTypeDel { color: var(--color-critical); }
+
+.noPatch {
+  padding: var(--space-lg);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-style: italic;
+}

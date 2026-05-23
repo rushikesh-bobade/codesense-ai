@@ -1,0 +1,45 @@
+{
+  "name": "project",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "react-router build",
+    "dev": "react-router dev",
+    "start": "react-router-serve ./build/server/index.js",
+    "typecheck": "react-router typegen && tsc"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@octokit/rest": "^22.0.1",
+    "@react-router/node": "^7.15.1",
+    "@react-router/serve": "^7.15.1",
+    "@tabler/icons-react": "^3.44.0",
+    "classnames": "^2.5.1",
+    "groq-sdk": "^1.2.0",
+    "isbot": "^5.1.40",
+    "radix-ui": "^1.4.3",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-hook-form": "^7.76.0",
+    "react-router": "^7.15.1"
+  },
+  "devDependencies": {
+    "@react-router/dev": "^7.15.1",
+    "@types/node": "24",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "prettier": "^3.8.3",
+    "typescript": "~6.0.3",
+    "vite": "^8.0.13"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "endOfLine": "auto"
+  },
+  "overrides": {
+    "@react-router/dev": {
+      "vite-node": "^6.0.0"
+    },
+    "@radix-ui/react-primitive": "2.1.3"
+  }
+}

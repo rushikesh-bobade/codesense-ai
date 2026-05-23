@@ -1,0 +1,261 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+.scoreCard {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.scoreCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(79, 108, 245, 0.08), transparent 70%);
+  pointer-events: none;
+}
+
+.scoreMeter {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.scoreSvg {
+  transform: rotate(-90deg);
+}
+
+.scoreTrack {
+  fill: none;
+  stroke: var(--color-bg-input);
+  stroke-width: 10;
+}
+
+.scoreFill {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.5s var(--ease-out);
+}
+
+.scoreCenter {
+  position: absolute;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.scoreNumber {
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  font-family: var(--family-display);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.scoreLabel {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.summary {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  line-height: 1.7;
+  text-align: center;
+  max-width: 580px;
+  z-index: 1;
+}
+
+.issueList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.noIssues {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3xl);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.noIssuesIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-lg);
+  background: var(--color-info-bg);
+  border: 1px solid var(--color-info-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-info);
+}
+
+.noIssuesTitle {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: -0.015em;
+}
+
+.noIssuesDesc {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+
+/* issue card */
+.issueCard {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.issueCard:hover {
+  border-color: var(--color-border-strong);
+}
+
+.issueCardCritical { box-shadow: inset 3px 0 0 var(--color-critical); }
+.issueCardWarning { box-shadow: inset 3px 0 0 var(--color-warning); }
+.issueCardSuggestion { box-shadow: inset 3px 0 0 var(--color-suggestion); }
+.issueCardInfo { box-shadow: inset 3px 0 0 var(--color-info); }
+
+.issueHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 12px var(--space-md) 12px 18px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.issueHeader:hover {
+  background: var(--color-bg-elevated);
+}
+
+.severityBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-weight: 600;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--family-mono);
+}
+
+.badgeCritical { background: var(--color-critical-bg); color: var(--color-critical); }
+.badgeWarning { background: var(--color-warning-bg); color: var(--color-warning); }
+.badgeSuggestion { background: var(--color-suggestion-bg); color: var(--color-suggestion); }
+.badgeInfo { background: var(--color-info-bg); color: var(--color-info); }
+
+.issueTitle {
+  flex: 1;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: -0.005em;
+}
+
+.issueFile {
+  font-family: var(--family-mono);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  background: var(--color-bg-input);
+  padding: 2px 7px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-border);
+}
+
+.chevron {
+  color: var(--color-text-muted);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+.issueBody {
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-md) var(--space-md) var(--space-md) 18px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  background: var(--color-bg-subtle);
+}
+
+.issueDesc {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+}
+
+.codeBlock {
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  font-family: var(--family-mono);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  overflow-x: auto;
+  white-space: pre;
+  line-height: 1.6;
+}
+
+.recBox {
+  background: var(--color-info-bg);
+  border: 1px solid var(--color-info-border);
+  border-radius: var(--radius-sm);
+  padding: 10px var(--space-md);
+  display: flex;
+  gap: 10px;
+}
+
+.recIcon {
+  color: var(--color-info);
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  margin-top: 2px;
+}
+
+.recText {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+}
