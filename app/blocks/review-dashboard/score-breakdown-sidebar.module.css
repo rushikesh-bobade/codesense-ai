@@ -120,6 +120,12 @@
   gap: 6px;
 }
 
+.actionDivider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 2px 0;
+}
+
 .actionBtn {
   display: flex;
   align-items: center;

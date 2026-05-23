@@ -50,6 +50,22 @@ export interface PRData {
   url: string;
 }
 
+export interface InlineComment {
+  filename: string;
+  lineNumber: number;
+  comment: string;
+  suggestion?: string;
+  severity: Severity;
+  type: 'bug' | 'security' | 'performance' | 'code_smell' | 'suggestion';
+}
+
+export interface PreMergeCheck {
+  name: string;
+  status: 'passed' | 'failed' | 'warning';
+  details: string;
+  blocking: boolean;
+}
+
 export interface ReviewResult {
   prData: PRData;
   issues: ReviewIssue[];
@@ -58,4 +74,7 @@ export interface ReviewResult {
   reviewedAt: string;
   analyzedFiles: number;
   tokensUsed?: number;
+  inlineComments?: InlineComment[];
+  preMergeChecks?: PreMergeCheck[];
+  githubReviewUrl?: string;
 }
