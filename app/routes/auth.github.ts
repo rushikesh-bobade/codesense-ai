@@ -2,7 +2,7 @@ import { redirect } from 'react-router';
 import type { Route } from './+types/auth.github';
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const clientId = process.env.GITHUB_CLIENT_ID;
+  const clientId = process.env.GITHUB_CLIENT_ID?.trim();
   
   if (!clientId || clientId === 'your_client_id_here') {
     throw new Error('GITHUB_CLIENT_ID is not configured in .env');
