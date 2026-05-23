@@ -10,6 +10,7 @@ import {
   IconLayoutDashboard,
   IconInfoCircle,
   IconLogout,
+  IconSettings,
 } from '@tabler/icons-react';
 import style from './navigation-bar.module.css';
 
@@ -65,6 +66,12 @@ export function NavigationBar({ className }: NavigationBarProps) {
             >
               About
             </NavLink>
+            <NavLink
+              to="/settings"
+              className={({ isActive }) => classnames(style.navLink, { [style.active]: isActive })}
+            >
+              Settings
+            </NavLink>
           </div>
         </div>
 
@@ -116,6 +123,9 @@ export function NavigationBar({ className }: NavigationBarProps) {
         </Link>
         <Link to="/about" className={style.mobileNavLink} onClick={close}>
           <IconInfoCircle size={18} /> About
+        </Link>
+        <Link to="/settings" className={style.mobileNavLink} onClick={close}>
+          <IconSettings size={18} /> Settings
         </Link>
         
         {!user ? (

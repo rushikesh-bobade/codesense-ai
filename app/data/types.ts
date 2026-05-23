@@ -77,4 +77,9 @@ export interface ReviewResult {
   inlineComments?: InlineComment[];
   preMergeChecks?: PreMergeCheck[];
   githubReviewUrl?: string;
+  changelog?: { category: string; description: string }[];
+  walkthrough?: string;
+  fileSummaries?: { file: string; summary: string }[];
+  poem?: string;
+  estimatedEffort?: string;
 }

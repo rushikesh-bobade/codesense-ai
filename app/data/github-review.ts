@@ -28,90 +28,69 @@ export function parsePRUrl(url: string): { owner: string; repo: string; pull_num
 // Build the rich markdown summary comment body
 // ─────────────────────────────────────────────────
 export function buildSummaryComment(result: ReviewResult): string {
-  const { issues, healthScore, summary, preMergeChecks } = result;
+  const { issues, healthScore, summary, preMergeChecks, changelog, walkthrough, fileSummaries, poem, estimatedEffort } = result;
 
   const criticals = issues.filter((i) => i.severity === 'critical');
   const warnings = issues.filter((i) => i.severity === 'warning');
   const suggestions = issues.filter((i) => i.severity === 'suggestion');
 
-  const scoreEmoji = healthScore.overall >= 80 ? '🟢' : healthScore.overall >= 60 ? '🟡' : '🔴';
+  // Summary by CodeSense
+  const summarySection = changelog && changelog.length > 0 
+    ? changelog.map(c => `### ${c.category}\n\n${c.description}\n`).join('\n')
+    : `### Summary\n\n${summary}`;
 
-  const mergeStatus =
-    criticals.length === 0
-      ? '✅ **Ready to Merge**'
-      : `🚫 **${criticals.length} blocking issue(s) must be fixed before merging**`;
+  const walkthroughSection = walkthrough 
+    ? `## 📝 Walkthrough\n\n${walkthrough}\n`
+    : '';
 
-  const criticalSection =
-    criticals.length > 0
-      ? `
-### 🔴 Critical Issues — Must Fix (${criticals.length})
-${criticals
-  .map(
-    (i) => `
-<details>
-<summary><b>${i.title}</b> — \`${i.file}\`${i.line ? `:${i.line}` : ''}</summary>
+  const changesTable = fileSummaries && fileSummaries.length > 0
+    ? `## Changes\n| File(s) | Summary |\n| --- | --- |\n${fileSummaries.map(fs => `| \`${fs.file}\` | ${fs.summary} |`).join('\n')}\n`
+    : '';
 
-${i.description}
+  const effortSection = estimatedEffort 
+    ? `## Estimated Code Review Effort\n${estimatedEffort}\n`
+    : '';
 
-**Recommendation:**
-\`\`\`
-${i.recommendation}
-\`\`\`
-</details>`,
-  )
-  .join('\n')}`
-      : '';
+  const poemSection = poem 
+    ? `## Poem\n🐰 ${poem.split('\n').join('\n')}\n`
+    : '';
 
-  const warningSection =
-    warnings.length > 0
-      ? `
-### ⚠️ Warnings (${warnings.length})
-${warnings.map((i) => `- **${i.title}** (\`${i.file}\`${i.line ? `:${i.line}` : ''}): ${i.description}`).join('\n')}`
-      : '';
+  const criticalSection = criticals.length > 0
+    ? `\n### 🔴 Critical Issues — Must Fix (${criticals.length})\n${criticals.map(i => `<details>\n<summary><b>${i.title}</b> — \`${i.file}\`${i.line ? `:${i.line}` : ''}</summary>\n\n${i.description}\n\n**Recommendation:**\n\`\`\`\n${i.recommendation}\n\`\`\`\n</details>`).join('\n')}`
+    : '';
 
-  const suggestionSection =
-    suggestions.length > 0
-      ? `
-### 💡 Suggestions (${suggestions.length})
-${suggestions.map((i) => `- ${i.title} (\`${i.file}\`)`).join('\n')}`
-      : '';
+  const warningSection = warnings.length > 0
+    ? `\n### ⚠️ Warnings (${warnings.length})\n${warnings.map(i => `- **${i.title}** (\`${i.file}\`${i.line ? `:${i.line}` : ''}): ${i.description}`).join('\n')}`
+    : '';
 
-  const checksSection =
-    preMergeChecks && preMergeChecks.length > 0
-      ? `
-### ✅ Pre-Merge Checks
-${preMergeChecks
-  .map((c) => {
-    const icon = c.status === 'passed' ? '✅' : c.status === 'failed' ? '❌' : '⚠️';
-    const blocking = c.blocking && c.status === 'failed' ? ' **[BLOCKING]**' : '';
-    return `${icon} ${c.name}${blocking} — ${c.details}`;
-  })
-  .join('\n')}`
-      : '';
+  const suggestionSection = suggestions.length > 0
+    ? `\n### 💡 Suggestions (${suggestions.length})\n${suggestions.map(i => `- ${i.title} (\`${i.file}\`)`).join('\n')}`
+    : '';
 
-  const appUrl = process.env.APP_URL || 'https://codesense-ai.vercel.app';
+  const appUrl = process.env.APP_URL || 'https://codesense-ai-two.vercel.app/';
 
-  return `## 🔍 CodeSense AI — Automated Code Review
+  return `## Summary by CodeSense
+${summarySection}
 
-${mergeStatus}
+---
 
-| Metric | Score |
-|--------|-------|
-| ${scoreEmoji} Overall Health | **${healthScore.overall}/100** |
-| 🔒 Security | ${healthScore.security}/100 |
-| ⚡ Performance | ${healthScore.performance}/100 |
-| 🔧 Maintainability | ${healthScore.maintainability}/100 |
+ℹ️ **Recent review info**
 
-### 📋 Summary
-${summary}
+**Configuration used:** defaults
+**Health Score:** ${healthScore.overall}/100
 
+${walkthroughSection}
+${changesTable}
+${effortSection}
+${poemSection}
+
+---
 ${criticalSection}
 ${warningSection}
 ${suggestionSection}
-${checksSection}
 
 ---
-<sub>🤖 Reviewed by <a href="${appUrl}">CodeSense AI</a> • ${new Date().toUTCString()}</sub>`;
+<sub>🎁 Summarized by <a href="${appUrl}">CodeSense AI</a> • ${new Date().toUTCString()}</sub>`;
 }
 
 // ─────────────────────────────────────────────────
@@ -228,13 +207,7 @@ export async function postReviewToGitHub(
   }
 
   // 4. Determine review decision
-  const criticalCount = result.issues.filter((i) => i.severity === 'critical').length;
-  const event: 'APPROVE' | 'REQUEST_CHANGES' | 'COMMENT' =
-    criticalCount === 0 && result.healthScore.overall >= 80
-      ? 'APPROVE'
-      : criticalCount > 0
-        ? 'REQUEST_CHANGES'
-        : 'COMMENT';
+  const event = 'COMMENT';
 
   // 5. Build the main summary comment body
   const summaryBody = buildSummaryComment(result);

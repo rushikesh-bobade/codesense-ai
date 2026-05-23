@@ -12,13 +12,17 @@ function parsePRUrl(url: string): { owner: string; repo: string; pull_number: nu
   return { owner: match[1], repo: match[2].replace(/\.git$/, ''), pull_number: parseInt(match[3], 10) };
 }
 
-function buildPrompt(files: { filename: string; patch: string }[]): string {
+function buildPrompt(files: { filename: string; patch: string }[], companyRules?: string): string {
   const fileContents = files
     .filter((f) => f.patch)
     .map((f) => `\n### FILE: ${f.filename}\n\`\`\`diff\n${f.patch.slice(0, 3500)}\n\`\`\``)
     .join('\n');
 
-  return `You are an expert senior software engineer performing a thorough code review. Analyze the following code changes from a GitHub Pull Request and identify ALL issues.
+  const rulesContext = companyRules
+    ? `\n\nCRITICAL COMPANY RULES (ENFORCE THESE STRICTLY):\n${companyRules}\n`
+    : '';
+
+  return `You are an expert senior software engineer performing a thorough code review. Analyze the following code changes from a GitHub Pull Request and identify ALL issues.${rulesContext}
 
 ${fileContents}
 
@@ -27,6 +31,15 @@ Respond ONLY with a valid JSON object. No markdown, no explanation outside the J
 Return this EXACT structure:
 {
   "summary": "2-3 sentence overall assessment of the PR",
+  "changelog": [
+    { "category": "New Features" | "Bug Fixes" | "Chores" | "Refactoring", "description": "Short description of changes in this category" }
+  ],
+  "walkthrough": "A concise paragraph explaining what this PR accomplishes technically",
+  "fileSummaries": [
+    { "file": "filename.ts", "summary": "One sentence summary of what changed in this specific file" }
+  ],
+  "estimatedEffort": "🎯 [1-5] (Low/Moderate/High) | ⏱️ ~[X] minutes",
+  "poem": "A fun, short rhyming poem (4 lines) about the code changes, often including emojis",
   "healthScore": {
     "overall": <number 0-100>,
     "security": <number 0-100>,
@@ -49,7 +62,7 @@ Return this EXACT structure:
 }
 
 Rules:
-- severity critical = security vulnerabilities, crashes, data loss risks
+- severity critical = security vulnerabilities, crashes, data loss risks (violating company rules is a warning/critical based on context)
 - severity warning = bugs, performance issues, bad practices
 - severity suggestion = improvements, readability, best practices
 - severity info = nitpicks, minor style remarks
@@ -170,6 +183,7 @@ export async function action({ request }: Route.ActionArgs) {
 
     const session = await getSession(request);
     let githubToken = session.get('githubToken');
+    const companyRules = session.get('companyRules') as string | undefined;
     let needsSessionUpdate = false;
 
     if (!githubToken) {
@@ -248,7 +262,7 @@ export async function action({ request }: Route.ActionArgs) {
     const groq = new Groq({ apiKey: groqKey });
     let analysisResult: { analysis: any; usage?: { total_tokens?: number } };
     try {
-      analysisResult = await callGroqWithRetry(groq, buildPrompt(analyzable));
+      analysisResult = await callGroqWithRetry(groq, buildPrompt(analyzable, companyRules));
     } catch (aiErr: any) {
       return Response.json(
         { error: 'AI analysis failed: ' + (aiErr?.message || 'unknown error') },
@@ -297,6 +311,11 @@ export async function action({ request }: Route.ActionArgs) {
         typeof analysis?.summary === 'string' && analysis.summary.trim()
           ? analysis.summary.trim()
           : 'Review completed.',
+      changelog: Array.isArray(analysis?.changelog) ? analysis.changelog : undefined,
+      walkthrough: typeof analysis?.walkthrough === 'string' ? analysis.walkthrough : undefined,
+      fileSummaries: Array.isArray(analysis?.fileSummaries) ? analysis.fileSummaries : undefined,
+      poem: typeof analysis?.poem === 'string' ? analysis.poem : undefined,
+      estimatedEffort: typeof analysis?.estimatedEffort === 'string' ? analysis.estimatedEffort : undefined,
       reviewedAt: new Date().toISOString(),
       analyzedFiles: analyzable.length,
       tokensUsed: usage?.total_tokens,

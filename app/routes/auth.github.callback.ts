@@ -10,8 +10,8 @@ export async function loader({ request }: Route.LoaderArgs) {
     return redirect('/?error=No code provided by GitHub');
   }
 
-  const clientId = process.env.GITHUB_CLIENT_ID;
-  const clientSecret = process.env.GITHUB_CLIENT_SECRET;
+  const clientId = process.env.GITHUB_CLIENT_ID?.trim();
+  const clientSecret = process.env.GITHUB_CLIENT_SECRET?.trim();
 
   if (!clientId || !clientSecret || clientId === 'your_client_id_here') {
     throw new Error('GitHub Client ID or Secret is not configured in .env');

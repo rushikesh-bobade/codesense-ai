@@ -6,6 +6,7 @@ import { PRInformationSidebar } from '../blocks/review-dashboard/pr-information-
 import { MainReviewContent } from '../blocks/review-dashboard/main-review-content';
 import { ScoreBreakdownSidebar } from '../blocks/review-dashboard/score-breakdown-sidebar';
 import { HistoryPanel } from '../blocks/review-dashboard/history-panel';
+import { FloatingChat } from '../blocks/review-dashboard/floating-chat';
 import { loadReviewResult, saveReviewResult } from '../data/review-store';
 import type { ReviewResult } from '../data/types';
 import style from './review-dashboard.module.css';
@@ -114,6 +115,7 @@ export default function ReviewDashboard() {
           isReanalyzing={isReanalyzing}
         />
       </div>
+      <FloatingChat result={result} />
     </div>
   );
 }

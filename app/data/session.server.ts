@@ -5,6 +5,7 @@ export type SessionData = {
   username?: string;
   avatarUrl?: string;
   anonymousCredits?: number;
+  companyRules?: string;
 };
 
 export type SessionFlashData = {
