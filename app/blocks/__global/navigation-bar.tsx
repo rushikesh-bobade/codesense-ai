@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, Link } from 'react-router';
+import { NavLink, Link, useRouteLoaderData } from 'react-router';
 import classnames from 'classnames';
 import {
   IconBrandGithub,
@@ -9,6 +9,7 @@ import {
   IconHistory,
   IconLayoutDashboard,
   IconInfoCircle,
+  IconLogout,
 } from '@tabler/icons-react';
 import style from './navigation-bar.module.css';
 
@@ -28,6 +29,10 @@ function LogoMark() {
 export function NavigationBar({ className }: NavigationBarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const close = () => setMobileOpen(false);
+
+  const rootData = useRouteLoaderData('root') as { user?: any; anonymousCredits?: number } | undefined;
+  const user = rootData?.user;
+  const credits = rootData?.anonymousCredits ?? 2;
 
   return (
     <>
@@ -64,20 +69,34 @@ export function NavigationBar({ className }: NavigationBarProps) {
         </div>
 
         <div className={style.actions}>
-          <a
-            href="https://github.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={style.ghostButton}
-            aria-label="GitHub"
-          >
-            <IconBrandGithub size={16} />
-            Star
-          </a>
-          <Link to="/" className={style.ctaButton}>
-            Analyze PR
-            <IconArrowRight size={14} />
-          </Link>
+          {!user ? (
+            <>
+              <div className={style.ghostButton} style={{ opacity: 0.8, cursor: 'default' }}>
+                <span style={{ color: 'var(--color-warning)' }}>{credits}/2 Free Credits</span>
+              </div>
+              <a href="/auth/github" className={style.ctaButton} style={{ background: '#24292e', color: '#fff' }}>
+                <IconBrandGithub size={16} />
+                Login with GitHub
+              </a>
+            </>
+          ) : (
+            <>
+              <div className={style.ghostButton} style={{ gap: '8px', cursor: 'default' }}>
+                <img
+                  src={user.avatarUrl}
+                  alt={user.username}
+                  style={{ width: 24, height: 24, borderRadius: '50%' }}
+                />
+                <span style={{ fontSize: '14px', fontWeight: 500 }}>{user.username}</span>
+              </div>
+              <form action="/logout" method="post">
+                <button type="submit" className={style.ghostButton} aria-label="Logout">
+                  <IconLogout size={16} />
+                </button>
+              </form>
+            </>
+          )}
+
           <button
             className={style.mobileMenuButton}
             onClick={() => setMobileOpen((v) => !v)}
@@ -98,20 +117,18 @@ export function NavigationBar({ className }: NavigationBarProps) {
         <Link to="/about" className={style.mobileNavLink} onClick={close}>
           <IconInfoCircle size={18} /> About
         </Link>
-        <a
-          href="https://github.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={style.mobileNavLink}
-          onClick={close}
-        >
-          <IconBrandGithub size={18} />
-          GitHub
-        </a>
-        <Link to="/" className={style.mobileCtaButton} onClick={close}>
-          Analyze a PR
-          <IconArrowRight size={16} />
-        </Link>
+        
+        {!user ? (
+          <a href="/auth/github" className={style.mobileCtaButton} onClick={close} style={{ background: '#24292e', color: '#fff', marginTop: 16 }}>
+            <IconBrandGithub size={18} /> Login with GitHub
+          </a>
+        ) : (
+          <form action="/logout" method="post" style={{ width: '100%', marginTop: 16 }}>
+            <button type="submit" className={style.mobileCtaButton} onClick={close} style={{ background: 'var(--color-critical-bg)', color: 'var(--color-critical)' }}>
+              <IconLogout size={18} /> Logout
+            </button>
+          </form>
+        )}
       </div>
     </>
   );

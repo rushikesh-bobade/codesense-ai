@@ -4,10 +4,9 @@ import type { ReviewResult, InlineComment } from './types';
 // ─────────────────────────────────────────────────
 // Create a per-call Octokit instance
 // ─────────────────────────────────────────────────
-function getOctokit(): Octokit {
-  const token = process.env.GITHUB_TOKEN;
+function getOctokit(token: string): Octokit {
   if (!token || token === 'your_github_pat_here') {
-    throw new Error('GITHUB_TOKEN is not configured. Add a valid GitHub Personal Access Token to .env');
+    throw new Error('A valid GitHub token is required to perform this action.');
   }
   return new Octokit({ auth: token });
 }
@@ -123,8 +122,9 @@ export async function getLatestCommitSha(
   owner: string,
   repo: string,
   pull_number: number,
+  githubToken: string,
 ): Promise<string> {
-  const octokit = getOctokit();
+  const octokit = getOctokit(githubToken);
   const { data } = await octokit.pulls.get({ owner, repo, pull_number });
   return data.head.sha;
 }
@@ -138,8 +138,9 @@ export async function getDiffPositions(
   owner: string,
   repo: string,
   pull_number: number,
+  githubToken: string,
 ): Promise<Map<string, Map<number, number>>> {
-  const octokit = getOctokit();
+  const octokit = getOctokit(githubToken);
   const { data: files } = await octokit.pulls.listFiles({
     owner,
     repo,
@@ -186,15 +187,16 @@ export async function postReviewToGitHub(
   prUrl: string,
   result: ReviewResult,
   inlineComments: InlineComment[],
+  githubToken: string,
 ): Promise<{ reviewUrl: string; commentCount: number }> {
-  const octokit = getOctokit();
+  const octokit = getOctokit(githubToken);
   const { owner, repo, pull_number } = parsePRUrl(prUrl);
 
   // 1. Get latest commit SHA (required for review API)
-  const commitId = await getLatestCommitSha(owner, repo, pull_number);
+  const commitId = await getLatestCommitSha(owner, repo, pull_number, githubToken);
 
   // 2. Get diff positions for inline comments
-  const positionMap = await getDiffPositions(owner, repo, pull_number);
+  const positionMap = await getDiffPositions(owner, repo, pull_number, githubToken);
 
   // 3. Build inline comment objects for GitHub API
   const validInlineComments: { path: string; position: number; body: string }[] = [];
@@ -262,8 +264,9 @@ export async function deletePreviousReviews(
   owner: string,
   repo: string,
   pull_number: number,
+  githubToken: string,
 ): Promise<void> {
-  const octokit = getOctokit();
+  const octokit = getOctokit(githubToken);
 
   try {
     const { data: reviews } = await octokit.pulls.listReviews({

@@ -1,4 +1,5 @@
 import type { Route } from './+types/api.post-review';
+import { getSession } from '../data/session.server';
 import {
   postReviewToGitHub,
   parsePRUrl,
@@ -13,6 +14,16 @@ export async function action({ request }: Route.ActionArgs) {
   }
 
   try {
+    const session = await getSession(request);
+    const githubToken = session.get('githubToken');
+
+    if (!githubToken) {
+      return Response.json(
+        { error: 'You must log in with GitHub to post a review.' },
+        { status: 401 }
+      );
+    }
+
     const body = (await request.json().catch(() => ({}))) as {
       prUrl?: string;
       reviewResult?: any;
@@ -29,26 +40,17 @@ export async function action({ request }: Route.ActionArgs) {
       return Response.json({ error: 'reviewResult is required' }, { status: 400 });
     }
 
-    if (!process.env.GITHUB_TOKEN || process.env.GITHUB_TOKEN === 'your_github_pat_here') {
-      return Response.json(
-        {
-          error:
-            'GITHUB_TOKEN is not configured. Add a valid GitHub Personal Access Token to your .env file with pull_requests:write permission.',
-        },
-        { status: 500 },
-      );
-    }
-
     const { owner, repo, pull_number } = parsePRUrl(prUrl);
 
     // Delete old reviews from this bot first (avoid duplicates)
-    await deletePreviousReviews(owner, repo, pull_number);
+    await deletePreviousReviews(owner, repo, pull_number, githubToken);
 
     // Post the new review
     const { reviewUrl, commentCount } = await postReviewToGitHub(
       prUrl,
       reviewResult,
       inlineComments || [],
+      githubToken
     );
 
     return Response.json({

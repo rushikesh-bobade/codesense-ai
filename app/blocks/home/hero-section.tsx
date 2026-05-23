@@ -231,7 +231,18 @@ export function HeroSection({ className, initialUrl }: HeroSectionProps) {
             </button>
           </div>
 
-          {error && <div className={style.errorMsg}>{error}</div>}
+          {error && (
+            <div className={style.errorMsg}>
+              {error}
+              {error.includes('log in') && (
+                <div style={{ marginTop: 12 }}>
+                  <a href="/auth/github" className={style.ctaButton} style={{ background: '#24292e', color: '#fff', display: 'inline-flex', padding: '8px 16px', borderRadius: '6px' }}>
+                    <IconBrandGithub size={16} /> Login with GitHub
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
 
           <p className={style.hint}>
             Works on any public PR

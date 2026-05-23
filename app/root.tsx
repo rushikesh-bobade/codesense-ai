@@ -3,12 +3,21 @@ import type { Route } from './+types/root';
 import { ErrorBoundary as ErrorBoundaryRoot } from '~/components/error-boundary/error-boundary';
 import favicon from '/favicon.svg';
 
+import { getSession, getUser } from './data/session.server';
+
 import './styles/reset.css';
 import './styles/global.css';
 import './styles/theme.css';
 
 import { NavigationBar } from './blocks/__global/navigation-bar';
 import { Footer } from './blocks/__global/footer';
+
+export async function loader({ request }: Route.LoaderArgs) {
+  const session = await getSession(request);
+  const user = await getUser(request);
+  const anonymousCredits = session.get('anonymousCredits') ?? 2;
+  return { user, anonymousCredits };
+}
 
 export const links: Route.LinksFunction = () => [
   { rel: 'icon', href: favicon, type: 'image/svg+xml' },

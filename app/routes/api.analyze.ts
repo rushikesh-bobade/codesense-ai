@@ -1,3 +1,4 @@
+import { getSession, commitSession } from '../data/session.server';
 import type { Route } from './+types/api.analyze';
 import Groq from 'groq-sdk';
 import { Octokit } from '@octokit/rest';
@@ -167,8 +168,30 @@ export async function action({ request }: Route.ActionArgs) {
       );
     }
 
-    // GitHub token is optional — public PRs work unauthenticated (lower rate limit).
-    const githubToken = process.env.GITHUB_TOKEN;
+    const session = await getSession(request);
+    let githubToken = session.get('githubToken');
+    let needsSessionUpdate = false;
+
+    if (!githubToken) {
+      // Anonymous user
+      let credits = session.get('anonymousCredits');
+      if (credits === undefined) credits = 2; // Default 2 free credits
+
+      if (credits <= 0) {
+        return Response.json(
+          { error: 'Free limit reached. Please log in with GitHub to continue analyzing.' },
+          { status: 403 },
+        );
+      }
+
+      // Use global token for anonymous users
+      githubToken = process.env.GITHUB_TOKEN;
+      
+      // Decrement credits
+      session.set('anonymousCredits', credits - 1);
+      needsSessionUpdate = true;
+    }
+
     const octokit = new Octokit(githubToken ? { auth: githubToken } : {});
     const { owner, repo, pull_number } = parsed;
 
@@ -279,7 +302,12 @@ export async function action({ request }: Route.ActionArgs) {
       tokensUsed: usage?.total_tokens,
     };
 
-    return Response.json(result, { status: 200 });
+    const headers = new Headers();
+    if (needsSessionUpdate) {
+      headers.append('Set-Cookie', await commitSession(session));
+    }
+
+    return Response.json(result, { status: 200, headers });
   } catch (error: any) {
     console.error('Analysis error:', error);
     return Response.json(

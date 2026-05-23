@@ -9,4 +9,7 @@ export default [
   route('/api/analyze', 'routes/api.analyze.ts'),
   route('/api/post-review', 'routes/api.post-review.ts'),
   route('/api/webhook', 'routes/api.webhook.ts'),
+  route('/auth/github', 'routes/auth.github.ts'),
+  route('/auth/github/callback', 'routes/auth.github.callback.ts'),
+  route('/logout', 'routes/logout.ts'),
 ] satisfies RouteConfig;
