@@ -1,6 +1,6 @@
 import { redirect, useLoaderData, Form, useNavigation } from 'react-router';
 import type { Route } from './+types/settings';
-import { getSession, commitSession } from '../data/session.server';
+import { getSession, commitSession, requireUser } from '../data/session.server';
 import { IconSettings, IconDeviceFloppy, IconLoader2 } from '@tabler/icons-react';
 
 export function meta() {
@@ -9,6 +9,7 @@ export function meta() {
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await getSession(request);
+  await requireUser(request); // Protect route
   return {
     companyRules: session.get('companyRules') || '',
   };

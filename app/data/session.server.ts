@@ -5,6 +5,8 @@ export type SessionData = {
   username?: string;
   avatarUrl?: string;
   anonymousCredits?: number;
+  userCredits?: number;
+  trialStartDate?: number;
   companyRules?: string;
 };
 
@@ -21,7 +23,7 @@ export const sessionStorage = createCookieSessionStorage<SessionData, SessionFla
   cookie: {
     name: '__codesense_session',
     httpOnly: true,
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge: 60 * 60 * 24 * 30, // 30 days
     path: '/',
     sameSite: 'lax',
     secrets: [sessionSecret],

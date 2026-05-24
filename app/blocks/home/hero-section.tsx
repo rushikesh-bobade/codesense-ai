@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import classnames from 'classnames';
-import { IconArrowRight, IconLoader2, IconSearch, IconSparkles } from '@tabler/icons-react';
+import { IconArrowRight, IconLoader2, IconSearch, IconSparkles, IconBrandGithub } from '@tabler/icons-react';
 import { saveReviewResult } from '../../data/review-store';
 import { DEMO_RESULT } from '../../data/demo-data';
 import style from './hero-section.module.css';

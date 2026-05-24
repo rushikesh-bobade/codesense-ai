@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useRouteLoaderData } from 'react-router';
 import {
   IconBrandGithub,
   IconCheck,
   IconLoader2,
   IconExternalLink,
   IconRefresh,
+  IconLock,
 } from '@tabler/icons-react';
 import type { ReviewResult, InlineComment } from '../../data/types';
 import style from './post-to-github-button.module.css';
@@ -23,7 +25,11 @@ export function PostToGitHubButton({ prUrl, reviewResult, inlineComments }: Post
   const [commentCount, setCommentCount] = useState(0);
   const [error, setError] = useState('');
 
+  const rootData = useRouteLoaderData('root') as { user?: any } | undefined;
+  const user = rootData?.user;
+
   async function handlePost() {
+    if (!user) return;
     setState('loading');
     setError('');
     try {
@@ -52,9 +58,15 @@ export function PostToGitHubButton({ prUrl, reviewResult, inlineComments }: Post
   if (state === 'idle') {
     return (
       <div className={style.root}>
-        <button onClick={handlePost} className={style.postBtn}>
-          <IconBrandGithub size={16} />
-          Post Review to GitHub
+        <button 
+          onClick={handlePost} 
+          className={style.postBtn}
+          disabled={!user}
+          style={!user ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+          title={!user ? "Login with GitHub to post reviews" : "Post Review to GitHub"}
+        >
+          {!user ? <IconLock size={16} /> : <IconBrandGithub size={16} />}
+          {!user ? 'For this feature login to GitHub account' : 'Post Review to GitHub'}
         </button>
       </div>
     );

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router';
-import { IconLoader2, IconSearch } from '@tabler/icons-react';
+import { IconLoader2, IconSearch, IconBrandGithub } from '@tabler/icons-react';
 import { IssueFilterBar, type FilterValue } from '../blocks/review-dashboard/issue-filter-bar';
 import { PRInformationSidebar } from '../blocks/review-dashboard/pr-information-sidebar';
 import { MainReviewContent } from '../blocks/review-dashboard/main-review-content';
@@ -87,7 +87,14 @@ export default function ReviewDashboard() {
       )}
       {reanalyzeError && (
         <div className={style.errorBanner}>
-          {reanalyzeError}
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+            <span>{reanalyzeError}</span>
+            {reanalyzeError.includes('log in') && (
+              <a href="/auth/github" style={{ marginLeft: 16, background: '#24292e', color: '#fff', padding: '6px 12px', borderRadius: '4px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: 13, fontWeight: 500 }}>
+                <IconBrandGithub size={14} /> Login with GitHub
+              </a>
+            )}
+          </div>
           <button onClick={() => setReanalyzeError('')} className={style.errorClose} aria-label="Dismiss">×</button>
         </div>
       )}
