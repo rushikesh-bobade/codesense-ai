@@ -24,6 +24,58 @@
   -webkit-mask-image: linear-gradient(180deg, black 0%, transparent 75%);
 }
 
+.orbsContainer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.5;
+  animation: float 20s infinite ease-in-out alternate;
+}
+
+.orb1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle at 30% 30%, rgba(107, 133, 255, 0.8), rgba(79, 108, 245, 0.2));
+  top: -100px;
+  left: -150px;
+  animation-delay: 0s;
+}
+
+.orb2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle at 70% 30%, rgba(167, 139, 250, 0.6), rgba(139, 92, 246, 0.1));
+  bottom: -200px;
+  right: -100px;
+  animation-delay: -5s;
+  animation-duration: 25s;
+}
+
+.orb3 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle at 50% 50%, rgba(52, 211, 153, 0.4), rgba(16, 185, 129, 0.05));
+  top: 40%;
+  left: 60%;
+  animation-delay: -10s;
+  animation-duration: 30s;
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(50px, -50px) scale(1.1); }
+  66% { transform: translate(-30px, 40px) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
 .inner {
   position: relative;
   z-index: 1;

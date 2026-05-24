@@ -188,22 +188,21 @@ export function HeroSection({ className, initialUrl }: HeroSectionProps) {
     <section className={classnames(style.root, className)}>
       <div className={style.bg} />
       <div className={style.dots} />
+      
+      <div className={style.orbsContainer}>
+        <div className={classnames(style.orb, style.orb1)} />
+        <div className={classnames(style.orb, style.orb2)} />
+        <div className={classnames(style.orb, style.orb3)} />
+      </div>
 
       <div className={style.inner}>
-        <div className={style.eyebrow}>
-          <IconSparkles size={13} />
-          Built with Llama 3.3 70B on Groq
-          <span className={style.eyebrowPill}>Beta</span>
-        </div>
-
         <div className={style.headlineWrap}>
           <h1 className={style.headline}>
-            Ship code with confidence.{' '}
-            <span className={style.headlineAccent}>Let AI catch what reviewers miss.</span>
+            Ship flawless code faster with{' '}
+            <span className={style.headlineAccent}>AI code reviews.</span>
           </h1>
           <p className={style.subheadline}>
-            CodeSense scans every line of your pull request for security flaws, performance bottlenecks,
-            and subtle bugs — delivering an actionable review in under 10 seconds.
+            CodeSense acts as an expert pair programmer, instantly analyzing your pull requests for security vulnerabilities, architectural flaws, and performance bottlenecks before you merge.
           </p>
         </div>
 

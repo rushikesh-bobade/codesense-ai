@@ -292,10 +292,10 @@ export async function action({ request }: Route.ActionArgs) {
     }
 
     // 7. Delete any previous CodeSense reviews (avoid duplicates on re-push)
-    await deletePreviousReviews(owner, repo, pull_number);
+    await deletePreviousReviews(owner, repo, pull_number, githubToken);
 
     // 8. Post the full review to GitHub
-    const { reviewUrl, commentCount } = await postReviewToGitHub(prUrl, reviewResult, inlineComments);
+    const { reviewUrl, commentCount } = await postReviewToGitHub(prUrl, reviewResult, inlineComments, githubToken);
 
     return Response.json({
       success: true,
