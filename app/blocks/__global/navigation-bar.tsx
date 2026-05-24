@@ -31,9 +31,24 @@ export function NavigationBar({ className }: NavigationBarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const close = () => setMobileOpen(false);
 
-  const rootData = useRouteLoaderData('root') as { user?: any; anonymousCredits?: number } | undefined;
+  const rootData = useRouteLoaderData('root') as { user?: any; anonymousCredits?: number; trialStartDate?: number } | undefined;
   const user = rootData?.user;
-  const credits = rootData?.anonymousCredits ?? 2;
+  const credits = rootData?.anonymousCredits ?? 1;
+  
+  let trialMessage = '';
+  let isTrialExpired = false;
+  if (user && rootData?.trialStartDate) {
+    const trialDurationMs = 7 * 24 * 60 * 60 * 1000;
+    const elapsed = Date.now() - rootData.trialStartDate;
+    const remainingDays = Math.ceil((trialDurationMs - elapsed) / (1000 * 60 * 60 * 24));
+    
+    if (remainingDays > 0) {
+      trialMessage = `${remainingDays} Days Left in Trial`;
+    } else {
+      trialMessage = 'Trial Expired';
+      isTrialExpired = true;
+    }
+  }
 
   return (
     <>
@@ -67,11 +82,19 @@ export function NavigationBar({ className }: NavigationBarProps) {
               About
             </NavLink>
             <NavLink
-              to="/settings"
+              to="/pricing"
               className={({ isActive }) => classnames(style.navLink, { [style.active]: isActive })}
             >
-              Settings
+              Pricing
             </NavLink>
+            {user && (
+              <NavLink
+                to="/settings"
+                className={({ isActive }) => classnames(style.navLink, { [style.active]: isActive })}
+              >
+                Settings
+              </NavLink>
+            )}
           </div>
         </div>
 
@@ -79,7 +102,7 @@ export function NavigationBar({ className }: NavigationBarProps) {
           {!user ? (
             <>
               <div className={style.ghostButton} style={{ opacity: 0.8, cursor: 'default' }}>
-                <span style={{ color: 'var(--color-warning)' }}>{credits}/2 Free Credits</span>
+                <span style={{ color: 'var(--color-warning)' }}>{credits}/1 Free Credit</span>
               </div>
               <a href="/auth/github" className={style.ctaButton} style={{ background: '#24292e', color: '#fff' }}>
                 <IconBrandGithub size={16} />
@@ -95,6 +118,11 @@ export function NavigationBar({ className }: NavigationBarProps) {
                   style={{ width: 24, height: 24, borderRadius: '50%' }}
                 />
                 <span style={{ fontSize: '14px', fontWeight: 500 }}>{user.username}</span>
+                {trialMessage && (
+                  <Link to="/pricing" style={{ fontSize: '12px', background: isTrialExpired ? 'var(--color-critical-bg)' : 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: 12, color: isTrialExpired ? 'var(--color-critical)' : 'var(--color-warning)', textDecoration: 'none' }}>
+                    {trialMessage}
+                  </Link>
+                )}
               </div>
               <form action="/logout" method="post">
                 <button type="submit" className={style.ghostButton} aria-label="Logout">
@@ -124,9 +152,11 @@ export function NavigationBar({ className }: NavigationBarProps) {
         <Link to="/about" className={style.mobileNavLink} onClick={close}>
           <IconInfoCircle size={18} /> About
         </Link>
-        <Link to="/settings" className={style.mobileNavLink} onClick={close}>
-          <IconSettings size={18} /> Settings
-        </Link>
+        {user && (
+          <Link to="/settings" className={style.mobileNavLink} onClick={close}>
+            <IconSettings size={18} /> Settings
+          </Link>
+        )}
         
         {!user ? (
           <a href="/auth/github" className={style.mobileCtaButton} onClick={close} style={{ background: '#24292e', color: '#fff', marginTop: 16 }}>

@@ -189,7 +189,7 @@ export async function action({ request }: Route.ActionArgs) {
     if (!githubToken) {
       // Anonymous user
       let credits = session.get('anonymousCredits');
-      if (credits === undefined) credits = 2; // Default 2 free credits
+      if (credits === undefined) credits = 1; // Default 1 free credit
 
       if (credits <= 0) {
         return Response.json(
@@ -198,12 +198,30 @@ export async function action({ request }: Route.ActionArgs) {
         );
       }
 
-      // Use global token for anonymous users
-      githubToken = process.env.GITHUB_TOKEN;
+      // Use global token for anonymous users if it exists, otherwise undefined (unauthenticated public API)
+      const envToken = process.env.GITHUB_TOKEN;
+      githubToken = envToken === 'your_github_personal_access_token_here' ? undefined : envToken;
       
       // Decrement credits
       session.set('anonymousCredits', credits - 1);
       needsSessionUpdate = true;
+    } else {
+      // Authenticated user (7-Day Trial Model)
+      const trialStartDate = session.get('trialStartDate') ?? Date.now();
+      const trialDurationMs = 7 * 24 * 60 * 60 * 1000;
+      
+      // If we didn't have one, save it now
+      if (!session.has('trialStartDate')) {
+        session.set('trialStartDate', trialStartDate);
+        needsSessionUpdate = true;
+      }
+
+      if (Date.now() > trialStartDate + trialDurationMs) {
+        return Response.json(
+          { error: 'Your 7-day free trial has expired. Please upgrade your subscription to continue analyzing PRs.' },
+          { status: 403 },
+        );
+      }
     }
 
     const octokit = new Octokit(githubToken ? { auth: githubToken } : {});

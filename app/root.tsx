@@ -14,9 +14,11 @@ import { Footer } from './blocks/__global/footer';
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await getSession(request);
-  const user = await getUser(request);
-  const anonymousCredits = session.get('anonymousCredits') ?? 2;
-  return { user, anonymousCredits };
+  return {
+    user: await getUser(request),
+    anonymousCredits: session.get('anonymousCredits') ?? 1,
+    trialStartDate: session.get('trialStartDate'),
+  };
 }
 
 export const links: Route.LinksFunction = () => [

@@ -63,6 +63,11 @@ export async function loader({ request }: Route.LoaderArgs) {
     session.set('username', userData.login);
     session.set('avatarUrl', userData.avatar_url);
 
+    const existingTrialStart = session.get('trialStartDate');
+    if (existingTrialStart === undefined) {
+      session.set('trialStartDate', Date.now());
+    }
+
     return redirect('/dashboard', {
       headers: {
         'Set-Cookie': await commitSession(session),
