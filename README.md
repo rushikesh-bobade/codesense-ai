@@ -22,9 +22,11 @@
 
 - 🔍 **Deep Code Analysis** — Goes beyond simple linting. Detects security vulnerabilities, performance bottlenecks, and logical errors through semantic understanding.
 - ⚡ **Ultra-Fast Inference** — Powered by Groq's LPU architecture, delivering instantaneous AI review feedback.
+- 💬 **Rich GitHub Reviews** — Automatically posts premium, highly-structured markdown comments on GitHub PRs, featuring collapsible sections, visual health score progress bars, and automated pre-merge checks.
+- 🌗 **Light/Dark Mode** — Full theme support with seamless Server-Side Rendering (SSR) hydration to prevent flash-of-unstyled-content (FOUC).
+- 🎨 **Premium 3D Aesthetics** — A gorgeous glassmorphism UI with dynamic 3D floating background orbs and curated color tokens.
 - 📊 **Comprehensive Dashboards** — Track review histories, repository health scores, and issue resolution metrics over time.
-- 🎨 **Polished UI/UX** — A fully responsive, dark-themed, and accessible interface designed for developer ergonomics.
-- 🔄 **GitHub Integration** — Analyze pull requests directly via Octokit integration.
+- 🔄 **Automated CI/CD Webhooks** — Seamlessly integrates into your workflow by listening to GitHub pull_request webhooks in real-time.
 
 ## 🛠 Tech Stack
 
