@@ -18,7 +18,7 @@ function scoreColor(s: number) {
   return 'var(--color-score-low)';
 }
 
-const CIRCUMFERENCE = 2 * Math.PI * 54;
+const CIRCUMFERENCE = 2 * Math.PI * 64;
 
 function ScoreMeter({ score }: { score: number }) {
   const [displayed, setDisplayed] = useState(0);
@@ -33,13 +33,13 @@ function ScoreMeter({ score }: { score: number }) {
 
   return (
     <div className={style.scoreMeter}>
-      <svg className={style.scoreSvg} width="140" height="140" viewBox="0 0 140 140">
-        <circle className={style.scoreTrack} cx="70" cy="70" r="54" />
+      <svg className={style.scoreSvg} width="160" height="160" viewBox="0 0 160 160">
+        <circle className={style.scoreTrack} cx="80" cy="80" r="64" />
         <circle
           className={style.scoreFill}
-          cx="70"
-          cy="70"
-          r="54"
+          cx="80"
+          cy="80"
+          r="64"
           stroke={color}
           strokeDasharray={CIRCUMFERENCE}
           strokeDashoffset={offset}
@@ -47,7 +47,7 @@ function ScoreMeter({ score }: { score: number }) {
       </svg>
       <div className={style.scoreCenter}>
         <span className={style.scoreNumber} style={{ color }}>{score}</span>
-        <span className={style.scoreLabel}>Health Score</span>
+        <span className={style.scoreLabel}>Health<br/>Score</span>
       </div>
     </div>
   );
