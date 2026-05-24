@@ -28,69 +28,267 @@ export function parsePRUrl(url: string): { owner: string; repo: string; pull_num
 // Build the rich markdown summary comment body
 // ─────────────────────────────────────────────────
 export function buildSummaryComment(result: ReviewResult): string {
-  const { issues, healthScore, summary, preMergeChecks, changelog, walkthrough, fileSummaries, poem, estimatedEffort } = result;
+  const { issues, healthScore, summary, preMergeChecks, prData, analyzedFiles, reviewedAt } = result;
+  const { changelog, walkthrough, fileSummaries, poem, estimatedEffort } = result;
 
   const criticals = issues.filter((i) => i.severity === 'critical');
   const warnings = issues.filter((i) => i.severity === 'warning');
   const suggestions = issues.filter((i) => i.severity === 'suggestion');
-
-  // Summary by CodeSense
-  const summarySection = changelog && changelog.length > 0 
-    ? changelog.map(c => `### ${c.category}\n\n${c.description}\n`).join('\n')
-    : `### Summary\n\n${summary}`;
-
-  const walkthroughSection = walkthrough 
-    ? `## 📝 Walkthrough\n\n${walkthrough}\n`
-    : '';
-
-  const changesTable = fileSummaries && fileSummaries.length > 0
-    ? `## Changes\n| File(s) | Summary |\n| --- | --- |\n${fileSummaries.map(fs => `| \`${fs.file}\` | ${fs.summary} |`).join('\n')}\n`
-    : '';
-
-  const effortSection = estimatedEffort 
-    ? `## Estimated Code Review Effort\n${estimatedEffort}\n`
-    : '';
-
-  const poemSection = poem 
-    ? `## Poem\n🐰 ${poem.split('\n').join('\n')}\n`
-    : '';
-
-  const criticalSection = criticals.length > 0
-    ? `\n### 🔴 Critical Issues — Must Fix (${criticals.length})\n${criticals.map(i => `<details>\n<summary><b>${i.title}</b> — \`${i.file}\`${i.line ? `:${i.line}` : ''}</summary>\n\n${i.description}\n\n**Recommendation:**\n\`\`\`\n${i.recommendation}\n\`\`\`\n</details>`).join('\n')}`
-    : '';
-
-  const warningSection = warnings.length > 0
-    ? `\n### ⚠️ Warnings (${warnings.length})\n${warnings.map(i => `- **${i.title}** (\`${i.file}\`${i.line ? `:${i.line}` : ''}): ${i.description}`).join('\n')}`
-    : '';
-
-  const suggestionSection = suggestions.length > 0
-    ? `\n### 💡 Suggestions (${suggestions.length})\n${suggestions.map(i => `- ${i.title} (\`${i.file}\`)`).join('\n')}`
-    : '';
+  const infos = issues.filter((i) => i.severity === 'info');
 
   const appUrl = process.env.APP_URL || 'https://codesense-ai-two.vercel.app/';
 
-  return `## Summary by CodeSense
+  // ── Score emoji helper ──
+  function scoreEmoji(score: number): string {
+    if (score >= 90) return '🟢';
+    if (score >= 70) return '🟡';
+    if (score >= 50) return '🟠';
+    return '🔴';
+  }
+
+  function scoreBar(score: number): string {
+    const filled = Math.round(score / 10);
+    const empty = 10 - filled;
+    return '█'.repeat(filled) + '░'.repeat(empty);
+  }
+
+  // ── Blocking issues banner ──
+  const blockingCount = criticals.length;
+  const blockingBanner = blockingCount > 0
+    ? `\n> 🚫 **${blockingCount} blocking issue(s) must be resolved before merging.**\n`
+    : `\n> ✅ **No blocking issues found — this PR is ready to merge.**\n`;
+
+  // ── Health Score Dashboard ──
+  const healthDashboard = `
+### ${scoreEmoji(healthScore.overall)} Health Score: ${healthScore.overall}/100
+
+| Metric | Score | |
+|:---|:---:|:---|
+| ${scoreEmoji(healthScore.overall)} **Overall Health** | **${healthScore.overall}**/100 | \`${scoreBar(healthScore.overall)}\` |
+| 🔒 Security | ${healthScore.security}/100 | \`${scoreBar(healthScore.security)}\` |
+| ⚡ Performance | ${healthScore.performance}/100 | \`${scoreBar(healthScore.performance)}\` |
+| 🔧 Maintainability | ${healthScore.maintainability}/100 | \`${scoreBar(healthScore.maintainability)}\` |
+`;
+
+  // ── Issue Breakdown ──
+  const issueBreakdown = `
+| Severity | Count |
+|:---|:---:|
+| 🔴 Critical | ${criticals.length} |
+| ⚠️ Warning | ${warnings.length} |
+| 💡 Suggestion | ${suggestions.length} |
+| ℹ️ Info | ${infos.length} |
+| **Total** | **${issues.length}** |
+`;
+
+  // ── Summary Section ──
+  const summarySection = `### 📋 Summary\n\n${summary}`;
+
+  // ── Pre-Merge Checks Table ──
+  let preMergeSection = '';
+  if (preMergeChecks && preMergeChecks.length > 0) {
+    const rows = preMergeChecks.map((c) => {
+      const icon = c.status === 'passed' ? '✅' : c.status === 'failed' ? '❌' : '⚠️';
+      const blocker = c.blocking ? '🔒' : '';
+      return `| ${icon} | ${c.name} | ${c.details} | ${blocker} |`;
+    }).join('\n');
+    preMergeSection = `
+<details>
+<summary><b>🛡️ Pre-Merge Checks (${preMergeChecks.filter(c => c.status === 'passed').length}/${preMergeChecks.length} passed)</b></summary>
+
+| Status | Check | Details | Blocking |
+|:---:|:---|:---|:---:|
+${rows}
+
+</details>
+`;
+  }
+
+  // ── Walkthrough Section ──
+  let walkthroughSection = '';
+  if (walkthrough) {
+    walkthroughSection = `
+<details>
+<summary><b>📝 Walkthrough</b></summary>
+
+${walkthrough}
+
+</details>
+`;
+  }
+
+  // ── Changelog Section ──
+  let changelogSection = '';
+  if (changelog && changelog.length > 0) {
+    const changelogItems = changelog.map((c) => {
+      const icon = c.category === 'New Features' ? '✨'
+        : c.category === 'Bug Fixes' ? '🐛'
+        : c.category === 'Refactoring' ? '♻️'
+        : '🔧';
+      return `**${icon} ${c.category}**\n${c.description}`;
+    }).join('\n\n');
+
+    changelogSection = `
+<details>
+<summary><b>📦 Changelog</b></summary>
+
+${changelogItems}
+
+</details>
+`;
+  }
+
+  // ── File Changes Table ──
+  let filesSection = '';
+  if (fileSummaries && fileSummaries.length > 0) {
+    const fileRows = fileSummaries.map((fs) => `| \`${fs.file}\` | ${fs.summary} |`).join('\n');
+    filesSection = `
+<details>
+<summary><b>📒 Files reviewed (${fileSummaries.length})</b></summary>
+
+| File | Summary |
+|:---|:---|
+${fileRows}
+
+</details>
+`;
+  } else if (prData) {
+    const fileRows = prData.files.map((f) => {
+      const statusIcon = f.status === 'added' ? '🆕' : f.status === 'deleted' ? '🗑️' : f.status === 'renamed' ? '📝' : '📄';
+      return `| ${statusIcon} \`${f.filename}\` | +${f.additions} / -${f.deletions} |`;
+    }).join('\n');
+    filesSection = `
+<details>
+<summary><b>📒 Files changed (${prData.files.length})</b></summary>
+
+| File | Changes |
+|:---|:---:|
+${fileRows}
+
+</details>
+`;
+  }
+
+  // ── Estimated Effort ──
+  let effortSection = '';
+  if (estimatedEffort) {
+    effortSection = `
+<details>
+<summary><b>⏱️ Estimated Review Effort</b></summary>
+
+${estimatedEffort}
+
+</details>
+`;
+  }
+
+  // ── Critical Issues (expanded, detailed) ──
+  let criticalSection = '';
+  if (criticals.length > 0) {
+    const criticalItems = criticals.map((i) => {
+      const locationStr = i.line ? `\`${i.file}:${i.line}\`` : `\`${i.file}\``;
+      const codeBlock = i.codeSnippet ? `\n\n**Problematic code:**\n\`\`\`\n${i.codeSnippet}\n\`\`\`` : '';
+      return `<details>
+<summary>🔴 <b>${i.title}</b> — ${locationStr}</summary>
+
+${i.description}${codeBlock}
+
+**💡 Recommendation:**
+> ${i.recommendation}
+
+</details>`;
+    }).join('\n\n');
+    criticalSection = `\n### 🔴 Critical Issues — Must Fix (${criticals.length})\n\n${criticalItems}\n`;
+  }
+
+  // ── Warnings ──
+  let warningSection = '';
+  if (warnings.length > 0) {
+    const warningItems = warnings.map((i) => {
+      const locationStr = i.line ? `\`${i.file}:${i.line}\`` : `\`${i.file}\``;
+      const codeBlock = i.codeSnippet ? `\n\n\`\`\`\n${i.codeSnippet}\n\`\`\`` : '';
+      return `<details>
+<summary>⚠️ <b>${i.title}</b> — ${locationStr}</summary>
+
+${i.description}${codeBlock}
+
+**💡 Recommendation:** ${i.recommendation}
+
+</details>`;
+    }).join('\n\n');
+    warningSection = `\n### ⚠️ Warnings (${warnings.length})\n\n${warningItems}\n`;
+  }
+
+  // ── Suggestions ──
+  let suggestionSection = '';
+  if (suggestions.length > 0) {
+    const suggestionItems = suggestions.map((i) => {
+      const locationStr = i.line ? `\`${i.file}:${i.line}\`` : `\`${i.file}\``;
+      return `- 💡 **${i.title}** (${locationStr}): ${i.description}`;
+    }).join('\n');
+    suggestionSection = `\n### 💡 Suggestions (${suggestions.length})\n\n${suggestionItems}\n`;
+  }
+
+  // ── Info ──
+  let infoSection = '';
+  if (infos.length > 0) {
+    const infoItems = infos.map((i) => `- ℹ️ **${i.title}** (\`${i.file}\`): ${i.description}`).join('\n');
+    infoSection = `\n### ℹ️ Notes (${infos.length})\n\n${infoItems}\n`;
+  }
+
+  // ── Poem (fun, like CodeRabbit) ──
+  let poemSection = '';
+  if (poem) {
+    poemSection = `
+<details>
+<summary><b>🎵 Poem</b></summary>
+
+> ${poem.split('\n').join('\n> ')}
+
+</details>
+`;
+  }
+
+  // ── Review Meta ──
+  const reviewDate = reviewedAt ? new Date(reviewedAt).toUTCString() : new Date().toUTCString();
+  const prStats = prData
+    ? `**${prData.changedFiles} files** changed (+${prData.additions} / -${prData.deletions})`
+    : '';
+
+  const metaSection = `
+<details>
+<summary><b>⚙️ Review details</b></summary>
+
+| Detail | Value |
+|:---|:---|
+| Reviewed at | ${reviewDate} |
+| Files analyzed | ${analyzedFiles || 'N/A'} |
+| PR stats | ${prStats} |
+| Configuration | defaults |
+| Review engine | CodeSense AI (Llama 3.3 70B) |
+
+</details>
+`;
+
+  // ── Assemble the final markdown ──
+  return `## 🔍 CodeSense AI — Automated Code Review
+
+${blockingBanner}
+${healthDashboard}
+${issueBreakdown}
+---
+
 ${summarySection}
 
 ---
 
-ℹ️ **Recent review info**
-
-**Configuration used:** defaults
-**Health Score:** ${healthScore.overall}/100
-
-${walkthroughSection}
-${changesTable}
-${effortSection}
-${poemSection}
-
+${preMergeSection}${walkthroughSection}${changelogSection}${filesSection}${effortSection}
 ---
-${criticalSection}
-${warningSection}
-${suggestionSection}
-
+${criticalSection}${warningSection}${suggestionSection}${infoSection}
 ---
-<sub>🎁 Summarized by <a href="${appUrl}">CodeSense AI</a> • ${new Date().toUTCString()}</sub>`;
+${poemSection}${metaSection}
+---
+<sub>🤖 Reviewed by <a href="${appUrl}">CodeSense AI</a> — Automated code review for every PR. • ${reviewDate}</sub>`;
 }
 
 // ─────────────────────────────────────────────────
