@@ -24,7 +24,7 @@ function ProductPreview() {
           <span className={style.previewDot} />
           <span className={style.previewDot} />
           <span className={style.previewDot} />
-          <div className={style.previewUrl}>codesense.ai/dashboard</div>
+          <div className={style.previewUrl}>rosereview.ai/dashboard</div>
         </div>
         <div className={style.previewBody}>
           <aside className={style.previewSidebar}>
@@ -202,7 +202,7 @@ export function HeroSection({ className, initialUrl }: HeroSectionProps) {
             <span className={style.headlineAccent}>AI code reviews.</span>
           </h1>
           <p className={style.subheadline}>
-            CodeSense acts as an expert pair programmer, instantly analyzing your pull requests for security vulnerabilities, architectural flaws, and performance bottlenecks before you merge.
+            RoseReview acts as an expert pair programmer, instantly analyzing your pull requests for security vulnerabilities, architectural flaws, and performance bottlenecks before you merge.
           </p>
         </div>
 

@@ -154,7 +154,7 @@ export async function action({ request }: Route.ActionArgs) {
   const prUrl = payload.pull_request.html_url;
   const { owner, repo, pull_number } = parsePRUrl(prUrl);
   const octokit = new Octokit({ auth: githubToken });
-  const appUrl = process.env.APP_URL || 'https://codesense-ai.vercel.app';
+  const appUrl = process.env.APP_URL || 'https://rosereview.ai';
 
   // 3. Post a "pending" comment immediately
   let pendingCommentId: number | null = null;
@@ -163,7 +163,7 @@ export async function action({ request }: Route.ActionArgs) {
       owner,
       repo,
       issue_number: pull_number,
-      body: `## 🔍 CodeSense AI — Review In Progress\n\n⏳ Analyzing your PR... results will appear here in ~15–30 seconds.\n\n<sub>Powered by <a href="${appUrl}">CodeSense AI</a></sub>`,
+      body: `## 🔍 RoseReview AI — Review In Progress\n\n⏳ Analyzing your PR... results will appear here in ~15–30 seconds.\n\n<sub>Powered by <a href="${appUrl}">RoseReview AI</a></sub>`,
     });
     pendingCommentId = pendingComment.id;
   } catch (err) {
@@ -291,7 +291,7 @@ export async function action({ request }: Route.ActionArgs) {
       await octokit.issues.deleteComment({ owner, repo, comment_id: pendingCommentId }).catch(() => {});
     }
 
-    // 7. Delete any previous CodeSense reviews (avoid duplicates on re-push)
+    // 7. Delete any previous RoseReview reviews (avoid duplicates on re-push)
     await deletePreviousReviews(owner, repo, pull_number, githubToken);
 
     // 8. Post the full review to GitHub

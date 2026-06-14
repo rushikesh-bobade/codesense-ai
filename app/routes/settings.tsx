@@ -4,7 +4,7 @@ import { getSession, commitSession, requireUser } from '../data/session.server';
 import { IconSettings, IconDeviceFloppy, IconLoader2 } from '@tabler/icons-react';
 
 export function meta() {
-  return [{ title: 'Settings — CodeSense AI' }];
+  return [{ title: 'Settings — RoseReview AI' }];
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -42,7 +42,7 @@ export default function SettingsPage() {
         </div>
         <div>
           <h1 style={{ fontSize: 32, fontWeight: 700, margin: 0, color: '#fff' }}>Settings</h1>
-          <p style={{ color: 'rgba(255,255,255,0.6)', margin: '4px 0 0 0' }}>Configure CodeSense AI preferences</p>
+          <p style={{ color: 'rgba(255,255,255,0.6)', margin: '4px 0 0 0' }}>Configure RoseReview AI preferences</p>
         </div>
       </div>
 
@@ -55,7 +55,7 @@ export default function SettingsPage() {
         <h2 style={{ fontSize: 20, fontWeight: 600, color: '#fff', margin: '0 0 16px 0' }}>Custom Company Rules</h2>
         <p style={{ color: 'rgba(255, 255, 255, 0.7)', lineHeight: 1.6, marginBottom: 24, fontSize: 15 }}>
           Define specific coding standards, stylistic preferences, or architectural rules for your team. 
-          CodeSense AI will strictly enforce these rules during every Pull Request analysis.
+          RoseReview AI will strictly enforce these rules during every Pull Request analysis.
         </p>
 
         <Form method="post">

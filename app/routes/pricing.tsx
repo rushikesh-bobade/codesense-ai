@@ -3,7 +3,7 @@ import { IconCheck, IconX, IconBrandGithub } from '@tabler/icons-react';
 import style from './pricing.module.css';
 
 export function meta() {
-  return [{ title: 'Pricing & Subscriptions — CodeSense AI' }];
+  return [{ title: 'Pricing & Subscriptions — RoseReview AI' }];
 }
 
 export default function Pricing() {
@@ -39,7 +39,7 @@ export default function Pricing() {
                 $0<span className={style.period}>/for 7 days</span>
               </div>
               <p className={style.description}>
-                Experience the full power of CodeSense for a week, completely free.
+                Experience the full power of RoseReview for a week, completely free.
               </p>
             </div>
             

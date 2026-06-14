@@ -51,7 +51,7 @@ export function ScoreBreakdownSidebar({
     return () => clearTimeout(t);
   }, [result]);
 
-  const baseFilename = `codesense-${safeFilename(result.prData.repo)}-pr-${result.prData.id}`;
+  const baseFilename = `rosereview-${safeFilename(result.prData.repo)}-pr-${result.prData.id}`;
 
   const handleCopy = async () => {
     try {

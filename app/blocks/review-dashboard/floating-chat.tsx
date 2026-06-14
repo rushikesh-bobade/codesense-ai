@@ -28,7 +28,7 @@ export function FloatingChat({ result }: { result: any }) {
       setMessages([
         {
           role: 'assistant',
-          content: "Hi! I'm CodeSense AI. Ask me anything about the pull request I just reviewed!",
+          content: "Hi! I'm RoseReview AI. Ask me anything about the pull request I just reviewed!",
         },
       ]);
     }
@@ -76,7 +76,7 @@ export function FloatingChat({ result }: { result: any }) {
           <div className={style.header}>
             <div className={style.headerTitle}>
               <IconMessageChatbot size={20} />
-              <span>Chat with CodeSense</span>
+              <span>Chat with RoseReview</span>
             </div>
             <button className={style.closeBtn} onClick={() => setIsOpen(false)}>
               <IconX size={20} />

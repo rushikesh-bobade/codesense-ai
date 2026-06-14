@@ -10,8 +10,8 @@ import style from './about.module.css';
 
 export function meta() {
   return [
-    { title: 'About — CodeSense AI' },
-    { name: 'description', content: 'How CodeSense AI works and what powers it.' },
+    { title: 'About — RoseReview AI' },
+    { name: 'description', content: 'How RoseReview AI works and what powers it.' },
   ];
 }
 
@@ -24,7 +24,7 @@ export default function AboutRoute() {
           A reviewer that <span className={style.titleAccent}>never sleeps.</span>
         </h1>
         <p className={style.lead}>
-          CodeSense AI scans GitHub Pull Requests in seconds. It surfaces security flaws, performance regressions,
+          RoseReview AI scans GitHub Pull Requests in seconds. It surfaces security flaws, performance regressions,
           and subtle bugs before they ship — no installation, no signup, no GitHub app to authorize.
         </p>
 
@@ -34,7 +34,7 @@ export default function AboutRoute() {
             How it works
           </h2>
           <p className={style.sectionText}>
-            When you paste a PR URL, CodeSense fetches the diff via the GitHub API, sends it to Llama 3.3 70B running
+            When you paste a PR URL, RoseReview fetches the diff via the GitHub API, sends it to Llama 3.3 70B running
             on Groq's inference platform, and returns a structured report covering security, performance,
             maintainability, and overall quality.
           </p>
@@ -64,7 +64,7 @@ export default function AboutRoute() {
             Privacy & Security
           </h2>
           <p className={style.sectionText}>
-            CodeSense does not store code or analysis results on its servers. Reviews are processed in real time and
+            RoseReview does not store code or analysis results on its servers. Reviews are processed in real time and
             results live exclusively in your browser's local storage. The only data sent to third parties is the PR
             diff itself, transmitted to Groq for analysis under their{' '}
             <a href="https://groq.com/privacy" target="_blank" rel="noopener noreferrer">privacy policy</a>.

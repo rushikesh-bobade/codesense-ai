@@ -1,7 +1,7 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 import type { Route } from './+types/root';
 import { ErrorBoundary as ErrorBoundaryRoot } from '~/components/error-boundary/error-boundary';
-import favicon from '/favicon.svg';
+import favicon from '/logo.png';
 
 import { getSession, getUser } from './data/session.server';
 
@@ -22,7 +22,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export const links: Route.LinksFunction = () => [
-  { rel: 'icon', href: favicon, type: 'image/svg+xml' },
+  { rel: 'icon', href: favicon, type: 'image/png' },
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
 ];

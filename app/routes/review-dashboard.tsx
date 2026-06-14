@@ -12,7 +12,7 @@ import type { ReviewResult } from '../data/types';
 import style from './review-dashboard.module.css';
 
 export function meta() {
-  return [{ title: 'Review Dashboard — CodeSense AI' }];
+  return [{ title: 'Review Dashboard — RoseReview AI' }];
 }
 
 export default function ReviewDashboard() {

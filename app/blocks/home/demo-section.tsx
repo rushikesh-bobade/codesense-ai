@@ -23,7 +23,7 @@ export function DemoSection({ className }: DemoSectionProps) {
       <div className={style.inner}>
         <h2 className={style.title}>Ready to review your first PR?</h2>
         <p className={style.subtitle}>
-          Try CodeSense with a sample report, or paste your own GitHub PR URL above. No account needed.
+          Try RoseReview with a sample report, or paste your own GitHub PR URL above. No account needed.
         </p>
         <div className={style.actions}>
           <button className={style.primaryBtn} onClick={handleDemo}>

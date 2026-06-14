@@ -1,7 +1,7 @@
 import type { ReviewResult } from './types';
 
-const STORAGE_KEY = 'codesense_review_result';
-const HISTORY_KEY = 'codesense_review_history';
+const STORAGE_KEY = 'rosereview_review_result';
+const HISTORY_KEY = 'rosereview_review_history';
 const MAX_HISTORY = 10;
 
 export interface HistoryEntry {
@@ -105,7 +105,7 @@ export function generateMarkdownReport(result: ReviewResult): string {
     info: 'ℹ️',
   };
 
-  let report = `# CodeSense AI — Code Review Report\n\n`;
+  let report = `# RoseReview AI — Code Review Report\n\n`;
   report += `**PR:** [${prData.title}](${prData.url})\n`;
   report += `**Repository:** ${prData.repo}\n`;
   report += `**Author:** ${prData.author}\n`;
@@ -135,7 +135,7 @@ export function generateMarkdownReport(result: ReviewResult): string {
     report += `---\n\n`;
   }
 
-  report += `*Analyzed by Llama 3.3 70B via Groq · CodeSense AI*\n`;
+  report += `*Analyzed by Llama 3.3 70B via Groq · RoseReview AI*\n`;
   return report;
 }
 
