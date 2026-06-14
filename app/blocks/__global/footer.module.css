@@ -33,9 +33,7 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, #4f6cf5 0%, #7c3aed 100%);
-  color: white;
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.06) inset;
+  overflow: hidden;
 }
 
 .logoText {
