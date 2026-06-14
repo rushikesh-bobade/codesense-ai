@@ -20,10 +20,7 @@ export interface NavigationBarProps {
 
 function LogoMark() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-      <path d="M3 12L9 6L11 8L7 12L11 16L9 18L3 12Z" fill="currentColor" />
-      <path d="M21 12L15 18L13 16L17 12L13 8L15 6L21 12Z" fill="currentColor" opacity="0.6" />
-    </svg>
+    <img src="/logo.png" alt="RoseReview Logo" width="16" height="16" />
   );
 }
 
@@ -58,8 +55,7 @@ export function NavigationBar({ className }: NavigationBarProps) {
             <div className={style.logoMark}>
               <LogoMark />
             </div>
-            <span className={style.logoText}>CodeSense</span>
-            <span className={style.logoSuffix}>AI</span>
+            <span className={style.logoText}>RoseReview</span>
           </Link>
 
           <div className={style.nav}>

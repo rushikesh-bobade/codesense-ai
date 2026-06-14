@@ -21,7 +21,7 @@ export async function action({ request }: Route.ActionArgs) {
 
     const groq = new Groq({ apiKey: groqKey });
 
-    const systemPrompt = `You are CodeSense AI, a helpful, expert AI code reviewer.
+    const systemPrompt = `You are RoseReview AI, a helpful, expert AI code reviewer.
 You just analyzed a GitHub Pull Request and found various issues.
 The user is now asking you questions about the code, your review, or how to fix specific problems.
 

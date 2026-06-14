@@ -9,10 +9,7 @@ export interface FooterProps {
 
 function LogoMark() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M3 12L9 6L11 8L7 12L11 16L9 18L3 12Z" fill="currentColor" />
-      <path d="M21 12L15 18L13 16L17 12L13 8L15 6L21 12Z" fill="currentColor" opacity="0.6" />
-    </svg>
+    <img src="/logo.png" alt="RoseReview Logo" width="16" height="16" />
   );
 }
 
@@ -23,7 +20,7 @@ export function Footer({ className }: FooterProps) {
         <div className={style.brand}>
           <Link to="/" className={style.logo}>
             <div className={style.logoMark}><LogoMark /></div>
-            <span className={style.logoText}>CodeSense AI</span>
+            <span className={style.logoText}>RoseReview</span>
           </Link>
           <p className={style.brandDesc}>
             AI-powered code reviews that catch security flaws, performance issues, and subtle bugs before they reach
@@ -69,7 +66,7 @@ export function Footer({ className }: FooterProps) {
       </div>
 
       <div className={style.bottom}>
-        <span className={style.copyright}>&copy; {new Date().getFullYear()} CodeSense AI · Built for developers</span>
+        <span className={style.copyright}>&copy; {new Date().getFullYear()} RoseReview · Built for developers</span>
         <div className={style.bottomMeta}>
           <span className={style.statusBadge}>
             <span className={style.statusDot} />

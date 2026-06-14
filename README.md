@@ -1,7 +1,7 @@
 <div align="center">
-  <img src="public/favicon.svg" alt="CodeSense AI Logo" width="120" />
+  <img src="public/logo.png" alt="RoseReview AI Logo" width="120" />
   
-  # CodeSense AI 🔍
+  # RoseReview AI 🔍
   
   **AI-Powered Code Review Platform**
   
@@ -12,7 +12,7 @@
   </p>
 
   <p>
-    Catch security flaws, performance issues, and subtle bugs before they reach production. CodeSense AI integrates seamlessly with your workflow to provide automated, deep code analysis using state-of-the-art LLMs.
+    Catch security flaws, performance issues, and subtle bugs before they reach production. RoseReview AI integrates seamlessly with your workflow to provide automated, deep code analysis using state-of-the-art LLMs.
   </p>
 </div>
 

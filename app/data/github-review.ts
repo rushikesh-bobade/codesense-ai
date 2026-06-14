@@ -36,7 +36,7 @@ export function buildSummaryComment(result: ReviewResult): string {
   const suggestions = issues.filter((i) => i.severity === 'suggestion');
   const infos = issues.filter((i) => i.severity === 'info');
 
-  const appUrl = process.env.APP_URL || 'https://codesense-ai-two.vercel.app/';
+  const appUrl = process.env.APP_URL || 'https://rosereview.ai/';
 
   // ── Score emoji helper ──
   function scoreEmoji(score: number): string {
@@ -265,13 +265,13 @@ ${i.description}${codeBlock}
 | Files analyzed | ${analyzedFiles || 'N/A'} |
 | PR stats | ${prStats} |
 | Configuration | defaults |
-| Review engine | CodeSense AI (Llama 3.3 70B) |
+| Review engine | RoseReview AI (Llama 3.3 70B) |
 
 </details>
 `;
 
   // ── Assemble the final markdown ──
-  return `## 🔍 CodeSense AI — Automated Code Review
+  return `## 🔍 RoseReview AI — Automated Code Review
 
 ${blockingBanner}
 ${healthDashboard}
@@ -288,7 +288,7 @@ ${criticalSection}${warningSection}${suggestionSection}${infoSection}
 ---
 ${poemSection}${metaSection}
 ---
-<sub>🤖 Reviewed by <a href="${appUrl}">CodeSense AI</a> — Automated code review for every PR. • ${reviewDate}</sub>`;
+<sub>🤖 Reviewed by <a href="${appUrl}">RoseReview AI</a> — Automated code review for every PR. • ${reviewDate}</sub>`;
 }
 
 // ─────────────────────────────────────────────────
@@ -428,7 +428,7 @@ export async function postReviewToGitHub(
 }
 
 // ─────────────────────────────────────────────────
-// Delete previous CodeSense AI review comments
+// Delete previous RoseReview AI review comments
 // (so re-running doesn't spam the PR with duplicate reviews)
 // ─────────────────────────────────────────────────
 export async function deletePreviousReviews(
@@ -457,7 +457,7 @@ export async function deletePreviousReviews(
             repo,
             pull_number,
             review_id: review.id,
-            message: 'Superseded by a new CodeSense AI review.',
+            message: 'Superseded by a new RoseReview AI review.',
           });
         } catch {
           // Some reviews can't be dismissed (e.g. COMMENTED), ignore silently

@@ -34,7 +34,7 @@ function formatDate(iso: string): string {
 
 export function meta() {
   return [
-    { title: 'Review History — CodeSense AI' },
+    { title: 'Review History — RoseReview AI' },
     { name: 'description', content: 'Browse your past code review analyses.' },
   ];
 }
